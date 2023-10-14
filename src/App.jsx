@@ -20,11 +20,11 @@ function App() {
       });
       const data = await res.json();
       console.log(data);
+      formData.reset();
     } catch (e) {
-      console.log(e.message);
+      console.error(e.message);
     }
-
-  }
+  };
 
   return (
     <>

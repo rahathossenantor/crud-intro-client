@@ -1,18 +1,20 @@
+import { useState } from "react";
 import { Link, useLoaderData } from "react-router-dom";
 
 const Users = () => {
-    const usersData = useLoaderData();
+    const data = useLoaderData();
+    const [usersData, setUsersData] = useState(data);
 
     const deleteUser = async (userId) => {
-        console.log(userId);
         fetch(`http://localhost:5000/users/${userId}`, {
             method: "DELETE"
         })
         .then((res) => res.json())
         .then((data) => {
             if (data.deletedCount > 0) {
-                alert("User deleted successfully!");
-                window.location.reload();
+                const remainingUsers = usersData.filter(user => user._id !== userId);
+                setUsersData(remainingUsers);
+                console.log("User deleted successfully!");
             }
         })
         .catch((err) => console.error(err));
@@ -22,8 +24,9 @@ const Users = () => {
         <div>
             <h2>Toatal users: {usersData.length}</h2>
             {
-                usersData.map((user) => <p key={user._id}>{user.name}, {user.email}&nbsp; &nbsp;
-                <button onClick={() => deleteUser(user._id)}>Delete</button>
+                usersData.map((user) => <p key={user._id}>{user.name}, {user._id}, {user.email}&nbsp; &nbsp;
+                <button onClick={() => deleteUser(user._id)}>Delete</button>&nbsp; &nbsp;
+                <Link to={`/update/${user._id}`}><button>Update</button></Link>
                 </p>)
             }
             <br />
